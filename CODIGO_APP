@@ -1,0 +1,226 @@
+import os
+from datetime import datetime
+import time
+
+# Senha fixa para o administrador
+SENHA_ADMIN_FIXA = "admin123"  # Defina aqui a senha do admin
+
+# Lista de CPFs permitidos
+CPFS_PERMITIDOS = ["12345678901", "98765432100"]  # Adicione aqui os CPFs autorizados
+
+# Função para salvar as senhas dos usuários em um arquivo
+def salvar_senha(usuario, senha):
+    with open("senhas.txt", "a") as arquivo:
+        arquivo.write(f"{usuario}:{senha}\n")
+
+# Função para carregar as senhas dos usuários do arquivo
+def carregar_senhas():
+    senhas = {}
+    if os.path.exists("senhas.txt"):
+        with open("senhas.txt", "r") as arquivo:
+            for linha in arquivo.readlines():
+                usuario, senha = linha.strip().split(":")
+                senhas[usuario] = senha
+    return senhas
+
+# Função para verificar se o usuário já existe
+def usuario_existe(usuario, senhas):
+    return usuario in senhas
+
+# Função de autenticação para usuários comuns
+def autenticar_usuario(usuario, senhas):
+    if usuario_existe(usuario, senhas):
+        tentativas = 3
+        while tentativas > 0:
+            senha = input(f"Digite sua senha, {usuario}: ")
+            if senhas[usuario] == senha:
+                print("Autenticação bem-sucedida!")
+                return True
+            else:
+                tentativas -= 1
+                print(f"Senha incorreta. Você tem {tentativas} tentativas restantes.")
+        print("Número de tentativas excedido.")
+        return False
+    else:
+        nova_senha = input("Você é um novo usuário. Crie sua senha: ")
+        salvar_senha(usuario, nova_senha)
+        print("Usuário registrado com sucesso!")
+        return True
+
+# Função para validar CPF do admin
+def validar_cpf():
+    cpf = input("Insira seu CPF para recuperação de acesso: ")
+    if cpf in CPFS_PERMITIDOS:
+        print("CPF válido. Acesso concedido.")
+        return True
+    else:
+        print("CPF inválido.")
+        return False
+
+# Função para autenticar admin com tentativas de senha e verificação de CPF
+def autenticar_admin():
+    tentativas = 4
+    while tentativas > 0:
+        senha_admin = input("Digite a senha de admin: ")
+        if senha_admin == SENHA_ADMIN_FIXA:
+            print("Bem-vindo, Admin!")
+            return True
+        else:
+            tentativas -= 1
+            print(f"Senha incorreta. Você tem {tentativas} tentativas restantes.")
+    
+    print("Você excedeu o número de tentativas.")
+    
+    # Solicitar CPF após 4 tentativas falhadas
+    if validar_cpf():
+        return True
+    else:
+        print("Autenticação falhou.")
+        return False
+
+# Função principal de autenticação
+def autenticar():
+    senhas = carregar_senhas()
+
+    escolha = input("Você é um usuário ou admin? (usuário/admin): ").lower()
+    if escolha == "admin":
+        return autenticar_admin()  # Verifica com a senha fixa do admin
+    else:
+        usuario = input("Digite seu nome de usuário: ")
+        return autenticar_usuario(usuario, senhas)
+
+# Função para impressão lenta (como no seu código original)
+def imprimir_lentamente(texto, intervalo=0.1):
+    for caractere in texto:
+        print(caractere, end='', flush=True)
+        time.sleep(intervalo)
+    print()
+
+# Função para cronômetro
+def cronometro(duracao):
+    print(f"Cronômetro iniciado: {duracao} segundos.")
+    while duracao:
+        mins, secs = divmod(duracao, 60)
+        timer = f'{mins:02d}:{secs:02d}'
+        print(timer, end="\r")
+        time.sleep(1)
+        duracao -= 1
+    print("Tempo esgotado! Prossiga para o próximo treino.\n")
+
+# Função para gerar o plano de treino (como no seu código original)
+def gerar_treino(idade, altura, peso, objetivo):
+    if objetivo == 1:
+        if idade >= 18 and 50 <= peso <= 100 and altura >= 1.60:
+            treinos = [("Treino de hipertrofia", 60), ("Treino de força", 45), ("Treino de pernas", 50), ("Treino de costas e bíceps", 40)]
+        else:
+            return "Você não atende aos requisitos para 'ganhar peso'."
+    elif objetivo == 2:
+        if idade >= 16 and peso >= 70:
+            treinos = [("HIIT", 30), ("Treino de resistência", 40), ("Treino de corrida", 30), ("Treino funcional", 35)]
+        else:
+            return "Você não atende aos requisitos para 'emagrecer'."
+    elif objetivo == 3:
+        if idade >= 18 and peso <= 90 and altura >= 1.50:
+            treinos = [("HIIT", 30), ("Treino funcional", 40), ("Cardio avançado", 50), ("Circuito de força", 45)]
+        else:
+            return "Você não atende aos requisitos para 'secar'."
+    elif objetivo == 4:
+        if idade >= 20 and peso >= 60:
+            treinos = [("Treino de hipertrofia", 60), ("Treino de força", 50), ("Treino de peito e tríceps", 45), ("Treino de pernas", 50)]
+        else:
+            return "Você não atende aos requisitos para 'ganhar massa muscular'."
+    else:
+        return "Objetivo não reconhecido. Tente novamente."
+    
+    return treinos
+
+# Funções administrativas
+
+# Função para listar todos os usuários cadastrados
+def listar_usuarios():
+    print("\n--- Usuários Cadastrados ---")
+    senhas = carregar_senhas()
+    for usuario in senhas:
+        print(f"Usuário: {usuario}")
+
+# Função para ver as senhas dos usuários
+def ver_senhas():
+    print("\n--- Senhas dos Usuários ---")
+    senhas = carregar_senhas()
+    for usuario, senha in senhas.items():
+        print(f"Usuário: {usuario} | Senha: {senha}")
+
+# Função para ver os treinos dos usuários (por simplicidade, aqui apenas uma simulação)
+def ver_treinos():
+    print("\n--- Treinos dos Usuários ---")
+    # Aqui você pode implementar um sistema que grava os treinos gerados para cada usuário
+    # Para simplificação, vamos apenas simular uma saída
+    print("Usuário: João | Treino: Hipertrofia, Força")
+    print("Usuário: Maria | Treino: HIIT, Corrida")
+
+# Menu de opções do admin
+def menu_admin():
+    while True:
+        print("\n--- Menu Administrativo ---")
+        print("1. Listar usuários cadastrados")
+        print("2. Ver senhas dos usuários")
+        print("3. Ver treinos dos usuários")
+        print("4. Sair")
+        opcao = input("Escolha uma opção: ")
+        
+        if opcao == "1":
+            listar_usuarios()
+        elif opcao == "2":
+            ver_senhas()
+        elif opcao == "3":
+            ver_treinos()
+        elif opcao == "4":
+            print("Saindo do menu administrativo.")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+# Início do código principal
+if autenticar():  # Verifica se a autenticação foi bem-sucedida
+    escolha = input("Você é um usuário ou admin? (usuário/admin): ").lower()
+    
+    if escolha == "admin":
+        menu_admin()  # Chama o menu de administração se o admin fizer login
+    else:
+        # Código para usuário comum continuar normalmente
+        current_dateTime = datetime.now()
+        print("========================================")
+        print("Bem-vindo ao Anti.Elite! \n")
+        print("Ficha de Treino")
+        print("========================================")
+        print("Data de inicio:", current_dateTime.day, "/", current_dateTime.month, "/", current_dateTime.year)
+        print("========================================")
+        nome = str(input("Insira seu Nome: "))
+        print("========================================")
+        idade = int(input("Insira sua Idade: "))
+        print("========================================")
+        print("Insira seu Objetivo de treino: ")
+        print("\n (1) Ganhar Peso \n (2) Emagrecer \n (3) Secar \n (4) Ganhar Massa Muscular")
+        objetivo = int(input("\n Insira umas das opções acima: "))
+        print("========================================")
+        genero = str(input("Digite seu gênero (masculino/feminino): "))
+        print("========================================")
+        peso = float(input("Digite seu peso (kg): "))
+        print("========================================")
+        altura = float(input("Digite sua altura (m): "))
+        print("========================================")
+        frequencia = int(input("Quantas vezes por semana você quer treinar (1-7)?: "))
+        print("========================================\n")
+
+        plano = gerar_treino(idade, altura, peso, objetivo)
+
+        if isinstance(plano, list):
+            print(f"O treino para {nome} será:\n")
+            for treino, duracao in plano:
+                print(f"Iniciando {treino} - Duração: {duracao} minutos")
+                cronometro(duracao * 60)  # Multiplica por 60 para converter minutos em segundos
+        else:
+            print(plano)
+else:
+    print("Falha na autenticação.")
+  
