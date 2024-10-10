@@ -2,18 +2,18 @@ import os
 from datetime import datetime
 import time
 
-# Senha fixa para o administrador
-SENHA_ADMIN_FIXA = "admin123"  # Defina aqui a senha do admin
+# Senha de administrador
+SENHA_ADMIN_FIXA = "admin123"  
 
-# Lista de CPFs permitidos
+# CPFs permitidos
 CPFS_PERMITIDOS = ["12345678901", "98765432100"]  # Adicione aqui os CPFs autorizados
 
-# Função para salvar as senhas dos usuários em um arquivo
+
 def salvar_senha(usuario, senha):
     with open("senhas.txt", "a") as arquivo:
         arquivo.write(f"{usuario}:{senha}\n")
 
-# Função para carregar as senhas dos usuários do arquivo
+
 def carregar_senhas():
     senhas = {}
     if os.path.exists("senhas.txt"):
@@ -23,11 +23,11 @@ def carregar_senhas():
                 senhas[usuario] = senha
     return senhas
 
-# Função para verificar se o usuário já existe
+
 def usuario_existe(usuario, senhas):
     return usuario in senhas
 
-# Função de autenticação para usuários comuns
+
 def autenticar_usuario(usuario, senhas):
     if usuario_existe(usuario, senhas):
         tentativas = 3
@@ -47,7 +47,7 @@ def autenticar_usuario(usuario, senhas):
         print("Usuário registrado com sucesso!")
         return True
 
-# Função para validar CPF do admin
+
 def validar_cpf():
     cpf = input("Insira seu CPF para recuperação de acesso: ")
     if cpf in CPFS_PERMITIDOS:
@@ -57,7 +57,7 @@ def validar_cpf():
         print("CPF inválido.")
         return False
 
-# Função para autenticar admin com tentativas de senha e verificação de CPF
+
 def autenticar_admin():
     tentativas = 4
     while tentativas > 0:
@@ -71,14 +71,14 @@ def autenticar_admin():
     
     print("Você excedeu o número de tentativas.")
     
-    # Solicitar CPF após 4 tentativas falhadas
+    #  4 tentativas falhadas
     if validar_cpf():
         return True
     else:
         print("Autenticação falhou.")
         return False
 
-# Função principal de autenticação
+
 def autenticar():
     senhas = carregar_senhas()
 
@@ -89,14 +89,14 @@ def autenticar():
         usuario = input("Digite seu nome de usuário: ")
         return autenticar_usuario(usuario, senhas)
 
-# Função para impressão lenta (como no seu código original)
+
 def imprimir_lentamente(texto, intervalo=0.1):
     for caractere in texto:
         print(caractere, end='', flush=True)
         time.sleep(intervalo)
     print()
 
-# Função para cronômetro
+
 def cronometro(duracao):
     print(f"Cronômetro iniciado: {duracao} segundos.")
     while duracao:
@@ -107,7 +107,7 @@ def cronometro(duracao):
         duracao -= 1
     print("Tempo esgotado! Prossiga para o próximo treino.\n")
 
-# Função para gerar o plano de treino (como no seu código original)
+#  gerar o plano de treino 
 def gerar_treino(idade, altura, peso, objetivo):
     if objetivo == 1:
         if idade >= 18 and 50 <= peso <= 100 and altura >= 1.60:
@@ -134,23 +134,23 @@ def gerar_treino(idade, altura, peso, objetivo):
     
     return treinos
 
-# Funções administrativas
 
-# Função para listar todos os usuários cadastrados
+
+
 def listar_usuarios():
     print("\n--- Usuários Cadastrados ---")
     senhas = carregar_senhas()
     for usuario in senhas:
         print(f"Usuário: {usuario}")
 
-# Função para ver as senhas dos usuários
+
 def ver_senhas():
     print("\n--- Senhas dos Usuários ---")
     senhas = carregar_senhas()
     for usuario, senha in senhas.items():
         print(f"Usuário: {usuario} | Senha: {senha}")
 
-# Função para ver os treinos dos usuários (por simplicidade, aqui apenas uma simulação)
+
 def ver_treinos():
     print("\n--- Treinos dos Usuários ---")
     # Aqui você pode implementar um sistema que grava os treinos gerados para cada usuário
@@ -158,7 +158,7 @@ def ver_treinos():
     print("Usuário: João | Treino: Hipertrofia, Força")
     print("Usuário: Maria | Treino: HIIT, Corrida")
 
-# Menu de opções do admin
+
 def menu_admin():
     while True:
         print("\n--- Menu Administrativo ---")
@@ -180,12 +180,12 @@ def menu_admin():
         else:
             print("Opção inválida. Tente novamente.")
 
-# Início do código principal
-if autenticar():  # Verifica se a autenticação foi bem-sucedida
+
+if autenticar(): 
     escolha = input("Você é um usuário ou admin? (usuário/admin): ").lower()
     
     if escolha == "admin":
-        menu_admin()  # Chama o menu de administração se o admin fizer login
+        menu_admin()  
     else:
         # Código para usuário comum continuar normalmente
         current_dateTime = datetime.now()
