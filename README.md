@@ -26,7 +26,7 @@ Após fazer o download do aplicativo e abrir, irá personalizar seu perfil, colo
 
 
 
-PERGUNTAS===================================
+PERGUNTAS:
 
 Em quais áreas da programação, a linguagem Python é mais utilizada?
 Qual a diferença entre back-end, front-end e banco de dados?
